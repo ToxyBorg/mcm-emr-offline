@@ -4,6 +4,5 @@ out
 .DS_Store
 *.log*
 
-/resources/extraction_script.ts
 /resources/mysql.zip
 /node_modules

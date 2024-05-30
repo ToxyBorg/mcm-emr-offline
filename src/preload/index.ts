@@ -16,6 +16,31 @@ const api = {
     const dir = path.dirname(fullPath)
     await fs.createReadStream(fullPath).pipe(unzipper.Extract({ path: dir }))
     return `Zip file ${fullPath} extracted to ${dir}`
+  },
+  extractZipFileStream: async (fullPath: string): Promise<string> => {
+    const dir = path.dirname(fullPath)
+
+    fs.createReadStream(fullPath)
+      .pipe(unzipper.Extract({ path: dir }))
+      .on('entry', (entry) => entry.autodrain())
+      .promise()
+      .then(
+        () => {
+          console.log(`Zip file ${fullPath} extracted to ${dir}`)
+          return `Zip file ${fullPath} extracted to ${dir}`
+        },
+        (e) => {
+          console.log(`EROOR! Zip file ${fullPath} could NOT be extracted to ${dir}: ${e}`)
+          return `EROOR! Zip file ${fullPath} could NOT be extracted to ${dir}: ${e}`
+        }
+      )
+      .finally(() => {
+        console.log('Finally')
+        alert('Finally')
+        return 'Finally'
+      })
+
+    return `Extracting ${fullPath} extracted to ${dir}`
   }
 }
 

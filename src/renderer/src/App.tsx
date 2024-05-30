@@ -1,6 +1,8 @@
 import Versions from './components/Versions'
 import electronLogo from './assets/electron.svg'
 import { CurrentDirectory } from './components/CurrentDirectory'
+import { TestExtract } from './components/TestExtract'
+import { TestExtractStream } from './components/TestExtractStream'
 
 function App(): JSX.Element {
   const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
@@ -8,6 +10,16 @@ function App(): JSX.Element {
   return (
     <>
       <CurrentDirectory></CurrentDirectory>
+      <TestExtract
+        inputPaths={['resources', 'app.asar.unpacked', 'resources', 'mysql.zip']}
+        name="mysql"
+      />
+
+      <TestExtractStream
+        inputPaths={['resources', 'app.asar.unpacked', 'resources', 'mysql.zip']}
+        name="mysql"
+      />
+
       <img alt="logo" className="logo" src={electronLogo} />
       <div className="creator">Powered by electron-vite</div>
       <div className="text">

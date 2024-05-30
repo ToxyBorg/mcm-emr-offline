@@ -9,6 +9,7 @@ declare global {
       checkPathExists: (fullPath: string) => boolean
       isZipFile: (fullPath: string) => boolean
       extractZipFile: (fullPath: string) => Promise<string>
+      extractZipFileStream: (fullPath: string) => Promise<string>
     }
   }
 }
