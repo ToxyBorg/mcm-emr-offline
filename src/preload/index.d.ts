@@ -3,6 +3,12 @@ import { ElectronAPI } from '@electron-toolkit/preload'
 declare global {
   interface Window {
     electron: ElectronAPI
-    api: unknown
+    api: {
+      getCurrentDir: () => string
+      joinPath: (...segments: string[]) => string
+      checkPathExists: (fullPath: string) => boolean
+      isZipFile: (fullPath: string) => boolean
+      extractZipFile: (fullPath: string) => Promise<string>
+    }
   }
 }
