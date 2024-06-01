@@ -52,7 +52,7 @@ const config: builder.Configuration = {
     artifactName: '${name}-${version}.${ext}'
   },
   linux: {
-    target: ['AppImage'],
+    target: ['dir'],
     maintainer: 'electronjs.org',
     category: 'Utility'
   },

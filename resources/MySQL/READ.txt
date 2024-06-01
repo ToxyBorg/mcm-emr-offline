@@ -1,0 +1,3 @@
+The mysql zip goes in this directory
+Got it from:
+https://dev.mysql.com/downloads/mysql/8.0.html
