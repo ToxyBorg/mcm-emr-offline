@@ -1,7 +1,7 @@
 {
   "Initialized": false,
-  "password": "root",
-  "user": null,
+  "password": null,
+  "user": "root",
   "mysql_sever_info": {
     "port": 3306,
     "host": "localhost",
