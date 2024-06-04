@@ -25,7 +25,6 @@ export const Checker: React.FC = () => {
       }
     } else {
       const hasTheInitializationPassed = await triggerChecks('PASSED')
-
       if (hasTheInitializationPassed == 'PASSED') {
         setResetInitializer(false)
         setLoading.close()

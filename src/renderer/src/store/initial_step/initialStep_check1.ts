@@ -16,13 +16,12 @@ const initialStep_check1LogicAtom = atom<CheckStatus, [update: CheckStatus], voi
     for (const file_to_extract of files_to_extract) {
       // If we are asked to reset
       if (update == 'NOT_CHECKED') {
+        await window.api.stopMySQLServer()
         // call the removal of the extracted java and mysql directories
         const removalOfExtractedZipsChecker: RemovingDirectoryStatus = await handleReset({
           pathSegmentsToDirectory: file_to_extract.pathSegmentsToZipDirectory,
           defaultDirectoryName: file_to_extract.defaultZipFileName.slice(0, -4)
         })
-
-        console.log('LOG removalOfExtractedZipsChecker', removalOfExtractedZipsChecker)
 
         if (removalOfExtractedZipsChecker == 'FAILED_REMOVING') {
           alert(

@@ -1,0 +1,23 @@
+{
+  "Initialized": false,
+  "password": "root",
+  "user": null,
+  "mysql_sever_info": {
+    "port": 3306,
+    "host": "localhost",
+    "processes": {
+      "mysqld": {
+        "names": ["mysqld.exe", "mysqld"],
+        "binaryPathSegments": ["resources", "MySQL", "mysql-8.0.37-winx64", "bin", "mysqld.exe"]
+      },
+      "mysql": {
+        "names": ["mysql.exe", "mysql"],
+        "binaryPathSegments": ["resources", "MySQL", "mysql-8.0.37-winx64", "bin", "mysql.exe"]
+      },
+      "mysqladmin": {
+        "names": ["mysqladmin.exe", "mysqladmin"],
+        "binaryPathSegments": ["resources", "MySQL", "mysql-8.0.37-winx64", "bin", "mysqladmin.exe"]
+      }
+    }
+  }
+}

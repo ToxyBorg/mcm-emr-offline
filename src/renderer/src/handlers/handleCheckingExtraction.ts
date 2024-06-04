@@ -6,22 +6,24 @@ export const handleCheckingExtraction = async (
 ): Promise<ExtractionStatus> => {
   // getting the FULL path to the directory where the ZIPS are supposed to be.
   // for example .../something/something/path/segments/in/pathSegmentsToZipDirectory/array
-  const fullDirPath: string = zip.pathSegmentsToZipDirectory.reduce(
-    (acc, curr) => window.api.joinPath(acc, curr),
+
+  const fullDirPath: string = await zip.pathSegmentsToZipDirectory.reduce(
+    async (acc, curr) => await window.api.joinPath(await acc, curr),
     window.api.getCurrentDir()
   )
 
   const tester = async (zipFileName: string): Promise<ExtractionStatus> => {
     // we link the zipFileName with the current FULL path
     // example .../something/something/path/segments/in/pathSegmentsToZipDirectory/array/xyz.zip
-    const zipFileNameFullPath = window.api.joinPath(fullDirPath, zipFileName)
-
+    const zipFileNameFullPath = await window.api.joinPath(fullDirPath, zipFileName)
+    console.log('- zipFileNameFullPath : ', zipFileNameFullPath)
     // We check if the zip has already been extracted by removing the .zip at the end
     // and checking if that path already exists
     const checkAlreadyExtracted = window.api.checkPathExists(zipFileNameFullPath.slice(0, -4))
 
     // If the file has already been extracted we return EXTRACTED
     if (checkAlreadyExtracted) {
+      console.log('- checkAlreadyExtracted : ', checkAlreadyExtracted)
       return 'EXTRACTED'
     }
 

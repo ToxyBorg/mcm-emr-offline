@@ -70,7 +70,7 @@ const config: builder.Configuration = {
 const build = async (): Promise<void> => {
   try {
     await builder.build({
-      targets: builder.Platform.LINUX.createTarget(),
+      targets: builder.Platform.WINDOWS.createTarget(),
       config
     })
   } catch (error) {

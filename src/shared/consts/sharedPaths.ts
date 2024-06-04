@@ -1,42 +1,78 @@
 import { BinariesType } from '@shared/types/binariesPath'
 import { ExtractionFileType } from '@shared/types/extractionPath'
+import { MySQLConfig } from '@shared/types/mysql_config'
 
 // JAVA PROD VERSION
-export const defaultPathToJavaDirectory = ['resources', 'app.asar.unpacked', 'resources', 'Java']
-export const defaultJavaZipName = 'zulu8.78.0.19-ca-jdk8.0.412-win_x64.zip'
-export const defaultJavaBinDirectory = [
+const defaultPathToJavaDirectory = ['resources', 'app.asar.unpacked', 'resources', 'Java']
+const defaultJavaZipName = 'zulu8.78.0.19-ca-jdk8.0.412-win_x64.zip'
+const defaultJavaBinDirectory = [
   ...defaultPathToJavaDirectory,
   defaultJavaZipName.slice(0, -4),
   'bin'
 ]
 
-export const defaultJavaExecutable = 'java.exe'
-
 // MYSQL PROD VERSION
-export const defaultPathToMySQLDirectory = ['resources', 'app.asar.unpacked', 'resources', 'MySQL']
-export const defaultMySQLZipName = 'mysql-8.0.37-winx64.zip'
-export const defaultMySQLBinDirectory = [
+const defaultPathToMySQLDirectory = ['resources', 'app.asar.unpacked', 'resources', 'MySQL']
+const defaultMySQLZipName = 'mysql-8.0.37-winx64.zip'
+const defaultMySQLBinDirectory = [
   ...defaultPathToMySQLDirectory,
   defaultMySQLZipName.slice(0, -4),
   'bin'
 ]
-export const defaultMySQLExecutable = 'mysql.exe'
-export const defaultMySQLdExecutable = 'mysqld.exe'
-export const defaultMySQLAdminExecutable = 'mysqladmin.exe'
+const defaultMySQLDataDirectory = [
+  ...defaultPathToMySQLDirectory,
+  defaultMySQLZipName.slice(0, -4),
+  'data'
+]
 
+const defaultMysqlConfig: MySQLConfig = {
+  Initialized: false,
+  password: null,
+  user: 'root',
+  mysql_sever_info: {
+    port: 3306,
+    host: 'localhost',
+    processes: {
+      mysqld: {
+        names: ['mysqld.exe', 'mysqld'],
+        binaryPathSegments: [...defaultMySQLBinDirectory, 'mysqld.exe']
+      },
+      mysql: {
+        names: ['mysql.exe', 'mysql'],
+        binaryPathSegments: [...defaultMySQLBinDirectory, 'mysql.exe']
+      },
+      mysqladmin: {
+        names: ['mysqladmin.exe', 'mysqladmin'],
+        binaryPathSegments: [...defaultMySQLBinDirectory, 'mysqladmin.exe']
+      }
+    }
+  }
+}
+const defaultMySQLConfigPath = [...defaultPathToMySQLDirectory, 'MySQL config', 'MySQL_Config.json']
 // DEV VERSIONS
-export const DEV_defaultPathToJavaDirectory = ['resources', 'Java']
-export const DEV_defaultJavaBinDirectory = [
+const DEV_defaultPathToJavaDirectory = ['resources', 'Java']
+const DEV_defaultJavaBinDirectory = [
   ...DEV_defaultPathToJavaDirectory,
   defaultJavaZipName.slice(0, -4),
   'bin'
 ]
 
-export const DEV_defaultPathToMySQLDirectory = ['resources', 'MySQL']
-export const DEV_defaultMySQLBinDirectory = [
+const DEV_defaultPathToMySQLDirectory = ['resources', 'MySQL']
+const DEV_defaultMySQLBinDirectory = [
   ...DEV_defaultPathToMySQLDirectory,
   defaultMySQLZipName.slice(0, -4),
   'bin'
+]
+const DEV_defaultMySQLDataDirectory = [
+  ...DEV_defaultPathToMySQLDirectory,
+  defaultMySQLZipName.slice(0, -4),
+  'data'
+]
+
+const DEV_defaultMySQLConfigPath = [
+  ...DEV_defaultPathToMySQLDirectory,
+  'MySQL config',
+  'MySQL_Config.json'
 ]
 
 // ************************************** //
@@ -104,14 +140,30 @@ const DEV_binaries_to_check: BinariesType[] = [
 
 // ************************************** //
 type EnvironmentType = 'DEV' | 'PROD'
-const ENVIRONMENT: EnvironmentType = 'DEV'
+const ENVIRONMENT: EnvironmentType = 'PROD'
 
 let binaries_to_check: BinariesType[] = PROD_binaries_to_check
 let files_to_extract: ExtractionFileType[] = PROD_files_to_extract
+let mysqlDataDirSegments: string[] = defaultMySQLDataDirectory
+let mysqlConfigPathSegments: string[] = defaultMySQLConfigPath
+let mysqlBinPathSegments: string[] = defaultMySQLBinDirectory
+let pathToMySQLDirectory: string[] = defaultPathToMySQLDirectory
 
 // IF WE"RE IN DEV MODE WE CHANGE THE FILEPATHS
 if ((ENVIRONMENT as EnvironmentType) == 'DEV') {
   binaries_to_check = DEV_binaries_to_check
   files_to_extract = DEV_files_to_extract
+  mysqlDataDirSegments = DEV_defaultMySQLDataDirectory
+  mysqlConfigPathSegments = DEV_defaultMySQLConfigPath
+  mysqlBinPathSegments = DEV_defaultMySQLBinDirectory
+  pathToMySQLDirectory = DEV_defaultPathToMySQLDirectory
 }
-export { binaries_to_check, files_to_extract }
+export {
+  binaries_to_check,
+  files_to_extract,
+  mysqlDataDirSegments,
+  mysqlConfigPathSegments,
+  mysqlBinPathSegments,
+  defaultMysqlConfig,
+  pathToMySQLDirectory
+}

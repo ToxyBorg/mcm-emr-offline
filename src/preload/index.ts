@@ -1,4 +1,4 @@
-import { contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 import * as path from 'path'
 import * as fs_extra from 'fs-extra'
@@ -6,12 +6,30 @@ import * as unzipper from 'unzipper'
 import { ExtractionStatus } from '../shared/types/extractionStatus'
 import { RemovingDirectoryStatus } from '@shared/types/removingDirectoryStatus'
 import { CopyingStatus } from '@shared/types/copyingDataToBackupStatus'
+import { CreatingDirectoryStatus } from '@shared/types/creatingDirectoryStatus'
+import { MySQLConfig } from '@shared/types/mysql_config'
+import { API } from '@shared/types/window.api.types'
 
 // Custom APIs for renderer
-const api = {
-  getCurrentDir: (): string => process.cwd(),
+const api: API = {
+  isMySQLServerRunning: (
+    host: string,
+    port: number,
+    user: string,
+    password: string | null
+  ): Promise<boolean> => ipcRenderer.invoke('is-mysql-server-running', host, port, user, password),
+  stopMySQLServer: async (): Promise<void> => ipcRenderer.invoke('stop-mysql-server'),
+  readMySQLConfigJson: async (fullPath: string): Promise<MySQLConfig> =>
+    ipcRenderer.invoke('read-mysql-config', fullPath),
+  writeMySQLConfigJson: async (fullPath: string, config: MySQLConfig): Promise<void> =>
+    ipcRenderer.invoke('write-mysql-config', fullPath, config),
+  getCurrentDir: async (): Promise<string> => ipcRenderer.invoke('get-current-directory'),
+  joinPath: (...segments: string[]): Promise<string> =>
+    ipcRenderer.invoke('join-path-segments', ...segments),
+  executeCommand: (command: string, timeout?: number): Promise<void> =>
+    ipcRenderer.invoke('execute-command', command, timeout),
+
   getPreviousDir: (fullPath: string): string => path.dirname(fullPath),
-  joinPath: (...segments: string[]): string => path.join(...segments),
 
   extractZipFileStream: async (fullPathToZipFile: string): Promise<ExtractionStatus> => {
     const directoryOfZipFile = path.dirname(fullPathToZipFile)
@@ -52,6 +70,22 @@ const api = {
         return 'FAILED_REMOVING'
       })
     return 'REMOVING'
+  },
+
+  creatingDirectory: async (
+    fullPathToExtractedDirectory: string
+  ): Promise<CreatingDirectoryStatus> => {
+    await fs_extra
+      .mkdir(fullPathToExtractedDirectory, { recursive: true })
+      .then((): CreatingDirectoryStatus => {
+        console.log(`Directory ${fullPathToExtractedDirectory} has been created`)
+        return 'CREATED'
+      })
+      .catch((error): CreatingDirectoryStatus => {
+        console.error(`Error: ${error.message}`)
+        return 'FAILED_CREATION'
+      })
+    return 'CREATING'
   },
   copyDataToBackUp: async (
     fullPathToDataDirectory: string,
@@ -104,7 +138,27 @@ const api = {
     return path.extname(fullPath) === '.zip' && fs_extra.existsSync(fullPath)
   },
 
-  checkPathExists: (fullPath: string): boolean => fs_extra.existsSync(fullPath)
+  checkPathExists: (fullPath: string): boolean => fs_extra.existsSync(fullPath),
+
+  checkDirIsEmpty: async (fullPath: string): Promise<boolean> => {
+    console.log('- checkDirIsEmpty fullPath:', fullPath)
+
+    const isDirectoryEmpty = await fs_extra.promises
+      .readdir(fullPath)
+      .then((listOfContentInDirectory): boolean => {
+        if (listOfContentInDirectory.length == 0) {
+          console.log(`Directory ${fullPath} is EMPTY`)
+          return true
+        } else {
+          return false
+        }
+      })
+      .catch((error) => {
+        console.error(`Error Reading The Directory At ${fullPath}`, error)
+        return false
+      })
+    return isDirectoryEmpty
+  }
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
