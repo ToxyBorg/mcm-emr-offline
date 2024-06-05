@@ -1,0 +1,4 @@
+The doctor's data zip goes in this directory
+Got it from:
+Rename The Zip to "Doctrors Data.zip" and place it in 
+the "MySQL config" folder

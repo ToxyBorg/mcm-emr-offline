@@ -1,0 +1,25 @@
+{
+  "Initialized": false,
+  "sqlDataDumped": false,
+  "password": null,
+  "user": "root",
+  "mysql_sever_info": {
+    "started": false,
+    "port": 3306,
+    "host": "localhost",
+    "processes": {
+      "mysqld": {
+        "names": ["mysqld.exe", "mysqld"],
+        "binaryPathSegments": []
+      },
+      "mysql": {
+        "names": ["mysql.exe", "mysql"],
+        "binaryPathSegments": []
+      },
+      "mysqladmin": {
+        "names": ["mysqladmin.exe", "mysqladmin"],
+        "binaryPathSegments": []
+      }
+    }
+  }
+}

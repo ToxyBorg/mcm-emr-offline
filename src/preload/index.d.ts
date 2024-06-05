@@ -1,14 +1,9 @@
 import { ElectronAPI } from '@electron-toolkit/preload'
+import { API } from '@shared/types/window.api.types'
 
 declare global {
   interface Window {
     electron: ElectronAPI
-    api: {
-      getCurrentDir: () => string
-      joinPath: (...segments: string[]) => string
-      checkPathExists: (fullPath: string) => boolean
-      isZipFile: (fullPath: string) => boolean
-      extractZipFile: (fullPath: string) => Promise<string>
-    }
+    api: API
   }
 }

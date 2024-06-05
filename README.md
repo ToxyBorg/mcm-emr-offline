@@ -1,6 +1,6 @@
-# electron-app
+# MCM-EMR-OFFLINE
 
-An Electron application with React and TypeScript
+An Electron application with React, TypeScript, Jotai and Mantine
 
 ## Recommended IDE Setup
 
@@ -10,25 +10,25 @@ An Electron application with React and TypeScript
 
 ### Install
 
-```bash
-$ yarn
-```
+* `npm i`to install the dependencies
+* `npm i -g ts-node` to install ts-node globally
 
-### Development
+### Download
 
-```bash
-$ yarn dev
-```
+1) The java zip goes in the dir `resources -> Java`
+
+https://www.azul.com/downloads/?version=java-8-lts&os=windows&architecture=x86-64-bit&package=jdk#zulu
+
+2) The `mysql` zip goes in the directory `resources -> MySQL`
+
+https://dev.mysql.com/downloads/mysql/8.0.html
+
+### Settings
+
+* `electron-builder.config.ts` for tweaking the build params of the app
+* `src -> shared -> sharedPaths.ts` to switch between `PROD` and `DEV` mode of the paths
+* `resources/Java/SpringBoot config/SpringBoot_Config.json` and `resources/MySQL/MySQL config/MySQL_Config.json` are used to determine the setup of the `MySQL` and `SpringBoot` server params
 
 ### Build
 
-```bash
-# For windows
-$ yarn build:win
-
-# For macOS
-$ yarn build:mac
-
-# For Linux
-$ yarn build:linux
-```
+* run `npm run build:electron-build` to build the app. But make sure all the `zips` are in their right place, as well as switching to `PROD` at the bottom of the `sharedPaths.ts` file

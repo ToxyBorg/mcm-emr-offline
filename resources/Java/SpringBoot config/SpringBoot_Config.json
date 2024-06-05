@@ -1,0 +1,13 @@
+{
+  "springboot_sever_info": {
+    "port": 2200,
+    "host": "localhost",
+    "processes": {
+      "java": {
+        "names": ["java.exe", "java"],
+        "binaryPathSegments": []
+      }
+    },
+    "started": false
+  }
+}

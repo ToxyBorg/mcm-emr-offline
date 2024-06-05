@@ -21,5 +21,15 @@
     "**/.factorypath": true
   },
   "hide-files.files": [],
-  "cSpell.words": ["nsis", "winx"]
+  "cSpell.words": [
+    "autodrain",
+    "consts",
+    "datadir",
+    "mysqladmin",
+    "mysqld",
+    "nsis",
+    "unzipper",
+    "winx"
+  ],
+  "sqltools.connections": []
 }

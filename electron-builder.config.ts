@@ -1,18 +1,15 @@
 'use strict'
 
 import * as builder from 'electron-builder'
-// import { extraction_script } from './resources/extraction_script'
 
 // Define the configuration options here
 const config: builder.Configuration = {
-  appId: 'com.electron.app',
-  productName: 'electron-app',
+  appId: 'com.mcm.emr.app',
+  productName: 'MCM EMR',
   directories: {
     buildResources: 'build'
   },
-  // "store” | “normal” | "maximum". - For testing builds, use 'store' to reduce build time significantly.
-  // compression: 'store',
-  // afterAllArtifactBuild: extraction_script,
+
   files: [
     '!**/.vscode/*',
     '!src/*',
@@ -23,7 +20,8 @@ const config: builder.Configuration = {
   ],
   asarUnpack: ['resources/**'],
   win: {
-    executableName: 'electron-app'
+    icon: 'resources/icons/Windows/mcm-logo-favicon-256x256.ico',
+    executableName: 'MCM EMR'
   },
   nsis: {
     artifactName: '${name}-${version}-setup.${ext}',
@@ -52,7 +50,7 @@ const config: builder.Configuration = {
     artifactName: '${name}-${version}.${ext}'
   },
   linux: {
-    target: ['AppImage'],
+    target: ['dir'],
     maintainer: 'electronjs.org',
     category: 'Utility'
   },
@@ -70,7 +68,7 @@ const config: builder.Configuration = {
 const build = async (): Promise<void> => {
   try {
     await builder.build({
-      targets: builder.Platform.LINUX.createTarget(),
+      targets: builder.Platform.WINDOWS.createTarget(),
       config
     })
   } catch (error) {
