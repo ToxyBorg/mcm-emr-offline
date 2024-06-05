@@ -9,6 +9,7 @@ import {
 } from '@shared/consts/sharedPaths'
 import { MySQLConfig, ProcessInfo } from '@shared/types/mysql_config'
 import { SpringBootConfig } from '@shared/types/springboot_config'
+import { textDisplayAtom } from '../shared/textDisplay'
 
 // Define atoms for each check with the initial state
 const initialStep_check2Atom = atom<CheckStatus>('NOT_CHECKED')
@@ -31,6 +32,11 @@ const initialStep_check2LogicAtom = atom<CheckStatus, [update: CheckStatus], voi
       // true or false
       const binaryFileCheckStatus: boolean = await handleCheckingBinaryFile(binary_to_check)
       console.log('- initialStep_check2LogicAtom binaryFileCheckStatus: ', binaryFileCheckStatus)
+      set(
+        textDisplayAtom,
+        `Binary file to check ${binary_to_check.nameOfBinary} exists ${binaryFileCheckStatus}`
+      )
+
       if (binaryFileCheckStatus) {
         const mysqlConfigFilePath: string = await mysqlConfigPathSegments.reduce(
           async (acc, curr) => window.api.joinPath(await acc, curr),

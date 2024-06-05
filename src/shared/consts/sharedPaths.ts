@@ -45,7 +45,7 @@ const defaultMySQLDataDirectory = [
 const defaultMysqlConfig: MySQLConfig = {
   Initialized: false,
   sqlDataDumped: false,
-  password: null,
+  password: 'root',
   user: 'root',
   mysql_sever_info: {
     started: false,

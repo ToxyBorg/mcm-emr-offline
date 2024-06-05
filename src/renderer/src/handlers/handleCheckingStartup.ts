@@ -33,10 +33,21 @@ export const handleCheckingStartup = async (): Promise<boolean> => {
     springBootConfig.springboot_sever_info.started
   )
 
-  if (
-    mysqlConfig.mysql_sever_info.started == true &&
-    springBootConfig.springboot_sever_info.started == true
-  ) {
+  const inIsMySQLServerRunning = await window.api.isMySQLServerRunning(
+    mysqlConfig.mysql_sever_info.host,
+    mysqlConfig.mysql_sever_info.port,
+    mysqlConfig.user,
+    mysqlConfig.password
+  )
+  console.log('- handleSpringBootServer inIsMySQLServerRunning: ', inIsMySQLServerRunning)
+
+  const isSpringBootServerRunning = await window.api.isSpringBootServerRunning(
+    springBootConfig.springboot_sever_info.host,
+    springBootConfig.springboot_sever_info.port
+  )
+  console.log('- handleSpringBootServer isSpringBootServerRunning: ', isSpringBootServerRunning)
+
+  if (inIsMySQLServerRunning == true && isSpringBootServerRunning == true) {
     console.log(
       `- handleSpringBootServer both servers are up. We can launch the window to MCM EMR port 
       ${springBootConfig.springboot_sever_info.port} of ${springBootConfig.springboot_sever_info.host}`

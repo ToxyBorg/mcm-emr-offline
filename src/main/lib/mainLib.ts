@@ -185,7 +185,7 @@ export const mainIsSpringBootServerRunning = async (
   try {
     return await new Promise((resolve) => {
       http
-        .get({ host, port }, (res) => {
+        .get({ host, port: Number(port) }, (res) => {
           console.log(
             '- mainIsSpringBootServerRunning res.statusCode === 200: ',
             res.statusCode === 200

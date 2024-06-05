@@ -5,13 +5,7 @@
     "processes": {
       "java": {
         "names": ["java.exe", "java"],
-        "binaryPathSegments": [
-          "resources",
-          "Java",
-          "zulu8.78.0.19-ca-jdk8.0.412-win_x64",
-          "bin",
-          "java.exe"
-        ]
+        "binaryPathSegments": []
       }
     },
     "started": false

@@ -2,6 +2,7 @@ import { handleSpringBootServer } from '@renderer/handlers/handleSpringBootServe
 import { atom, Getter, Setter } from 'jotai'
 import { CheckStatus } from 'src/shared/types/check_status'
 import { initialStep_check5LogicAtom } from './initialStep_check5'
+import { textDisplayAtom } from '../shared/textDisplay'
 
 // Define atoms for each check with the initial state
 const initialStep_check6Atom = atom<CheckStatus>('NOT_CHECKED')
@@ -16,10 +17,17 @@ const initialStep_check6LogicAtom = atom<CheckStatus, [update: CheckStatus], voi
       return
     }
 
+    set(textDisplayAtom, `Entering SpringBoot server startup step`)
+
     const hasTheSpringBootServerStarted = await handleSpringBootServer()
     console.log(
       '- initialStep_check6LogicAtom hasTheSpringBootServerStarted:',
       hasTheSpringBootServerStarted
+    )
+
+    set(
+      textDisplayAtom,
+      `Checking if the SpringBoot server has started: ${hasTheSpringBootServerStarted}`
     )
 
     if (hasTheSpringBootServerStarted) {

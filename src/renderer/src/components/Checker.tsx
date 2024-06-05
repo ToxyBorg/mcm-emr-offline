@@ -1,52 +1,79 @@
-import { Button, LoadingOverlay } from '@mantine/core'
-import { useDisclosure } from '@mantine/hooks'
+import { ActionIcon, Flex, Notification, Text } from '@mantine/core'
 import { checking_index } from '@renderer/store/checks/checking_index'
-import { useSetAtom } from 'jotai'
-import React, { useEffect } from 'react'
-import { MCMredirect } from './MCMredirect'
-import { Reset } from './Reset'
+import { loadingStatusAtom } from '@renderer/store/shared/loadingStatus'
+import { useAtom, useSetAtom } from 'jotai'
+import { useState } from 'react'
+import { FaRegCircleCheck } from 'react-icons/fa6'
+import { RxCrossCircled } from 'react-icons/rx'
+import { RxCheckCircled } from 'react-icons/rx'
 
-export const Checker: React.FC = () => {
+export const Checker = (): JSX.Element => {
+  const [loading, setLoading] = useAtom(loadingStatusAtom)
+  const [checkStatus, setCheckStatus] = useState<boolean | null>(null)
+
   const triggerChecks = useSetAtom(checking_index)
-
-  const [loading, setLoading] = useDisclosure(true)
-  const [passed, setPassed] = useDisclosure(false)
-
   const handleChecker = async (): Promise<void> => {
-    setLoading.open()
-    console.log('- Checker loading:', loading)
-
+    setLoading(true)
     const hasTheInitializationPassed = await triggerChecks('PASSED')
     console.log('- Checker hasTheInitializationPassed:', hasTheInitializationPassed)
-    if (hasTheInitializationPassed == 'PASSED') {
-      setPassed.open()
-    } else {
-      setPassed.close()
+    setLoading(false)
+
+    if (hasTheInitializationPassed == 'FAILED') {
+      setCheckStatus(false)
+    } else if (hasTheInitializationPassed == 'PASSED') {
+      setCheckStatus(true)
     }
-    setLoading.close()
   }
-
-  useEffect(() => {
-    handleChecker()
-
-    return (): void => {}
-  }, [])
 
   return (
     <>
-      <LoadingOverlay
-        visible={loading}
-        zIndex={1000}
-        overlayProps={{ radius: 'sm', blur: 2 }}
-        loaderProps={{ color: 'pink', type: 'bars' }}
-      />
-      <Reset checksAreLoading={loading} />
-      {!loading && (
-        <Button onClick={handleChecker} disabled={loading}>
-          Refresh
-        </Button>
+      {checkStatus == false && (
+        <Notification
+          pos={'fixed'}
+          style={{ zIndex: 500, top: 0 }}
+          icon={<RxCrossCircled />}
+          color="red"
+          title="Bummer!"
+          onClose={() => setCheckStatus(null)}
+        >
+          Check Has Failed! Try Reseting
+        </Notification>
       )}
-      <MCMredirect checksHavePassed={passed} />
+      {checkStatus == true && (
+        <Notification
+          pos={'fixed'}
+          style={{ zIndex: 500, top: 0 }}
+          icon={<RxCheckCircled />}
+          color="teal"
+          title="All good!"
+          mt="md"
+          onClose={() => setCheckStatus(null)}
+        >
+          Manual Check Went Well
+        </Notification>
+      )}
+      <ActionIcon
+        loading={loading}
+        disabled={loading}
+        variant="gradient"
+        gradient={{ from: 'yellow', to: 'lime', deg: 95 }}
+        size={'fit-content'}
+        p={'sm'}
+        radius={'lg'}
+        aria-label="Open MCM EMR Webpage"
+        style={{
+          border: '2px solid grey',
+          boxShadow: '5px 5px 2px grey'
+        }}
+        onClick={handleChecker}
+      >
+        <Flex justify={'space-between'} align={'center'} gap={'lg'}>
+          <FaRegCircleCheck style={{ width: '2rem', height: '100%' }} />
+          <Text ta={'center'} fw={'bold'}>
+            Check MCM
+          </Text>
+        </Flex>
+      </ActionIcon>
     </>
   )
 }

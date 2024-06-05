@@ -4,6 +4,7 @@ import { initialStep_check2LogicAtom } from './initialStep_check2'
 import { handleCheckingMySQLDataDirectory } from '@renderer/handlers/handleCheckingMySQLDataDirectory'
 import { mysqlDataDirSegments } from '@shared/consts/sharedPaths'
 import { handleCreatingMySQLDataDirectory } from '@renderer/handlers/handleCreatingMySQLDataDirectory'
+import { textDisplayAtom } from '../shared/textDisplay'
 
 // Define atoms for each check with the initial state
 const initialStep_check3Atom = atom<CheckStatus>('NOT_CHECKED')
@@ -24,6 +25,10 @@ const initialStep_check3LogicAtom = atom<CheckStatus, [update: CheckStatus], voi
     console.log(
       '- initialStep_check3LogicAtom mysqlDataDirectoryCheckStatus: ',
       mysqlDataDirectoryCheckStatus
+    )
+    set(
+      textDisplayAtom,
+      `Checking the MySQL data directory if exists:  ${mysqlDataDirectoryCheckStatus}`
     )
 
     if (mysqlDataDirectoryCheckStatus == false) {

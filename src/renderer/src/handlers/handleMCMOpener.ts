@@ -49,7 +49,6 @@ export const handleMCMOpener = async (): Promise<boolean> => {
     )
     return true
   } else {
-    alert('The servers are not running! Please retry or relaunch the application.')
     console.log(
       `- handleMCMOpener NOT both servers are up. We CANNOT launch the window to MCM EMR port 
       ${springBootConfig.springboot_sever_info.port} of ${springBootConfig.springboot_sever_info.host}`

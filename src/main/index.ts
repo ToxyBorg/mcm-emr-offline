@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain, dialog, Tray, Menu } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, dialog, Tray } from 'electron'
 // import * as path from 'node:path'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
@@ -27,7 +27,7 @@ function createWindow(): void {
     width: 900,
     height: 670,
     show: false,
-    autoHideMenuBar: false,
+    autoHideMenuBar: true,
     // ...(process.platform === 'linux' ? { icon } : {}),
     icon: join(__dirname, '../../resources/icons/Windows/mcm-logo-favicon-256x256.ico'),
     webPreferences: {
@@ -75,11 +75,10 @@ function createWindow(): void {
   // Load the remote URL for development or the local html file for production.
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
+    mainWindow.webContents.openDevTools({ mode: 'detach' })
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
-
-  mainWindow.webContents.openDevTools()
 }
 
 // This method will be called when Electron has finished
@@ -99,12 +98,8 @@ app.whenReady().then(() => {
   let tray: Tray | null = null
 
   tray = new Tray(join(__dirname, '../../resources/icons/Windows/mcm-logo-favicon-256x256.ico'))
-  const contextMenu = Menu.buildFromTemplate([
-    { label: 'Item1', type: 'radio' },
-    { label: 'Item2', type: 'radio' }
-  ])
   tray.setToolTip('MCM EMR Offline Application')
-  tray.setContextMenu(contextMenu)
+  // tray.setContextMenu(contextMenu)
 
   ipcMain.handle('stop-mysql-server', () => mainStopMySQLServer())
   ipcMain.handle('stop-springboot-server', () => mainStopSpringBootServer())
@@ -146,7 +141,13 @@ app.whenReady().then(() => {
   })
 
   ipcMain.handle('open-mcm-emr-url', (_, mcmEmrUrl: string) => {
-    const openWindow = new BrowserWindow()
+    const openWindow = new BrowserWindow({
+      width: 900,
+      height: 670,
+      autoHideMenuBar: true,
+      title: 'MCM EMR',
+      icon: join(__dirname, '../../resources/icons/Windows/mcm-logo-favicon-256x256.ico')
+    })
     openWindow.loadURL(mcmEmrUrl)
   })
 })

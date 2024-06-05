@@ -10,39 +10,15 @@
     "processes": {
       "mysqld": {
         "names": ["mysqld.exe", "mysqld"],
-        "binaryPathSegments": [
-          "resources",
-          "app.asar.unpacked",
-          "resources",
-          "MySQL",
-          "mysql-8.0.37-winx64",
-          "bin",
-          "mysqld.exe"
-        ]
+        "binaryPathSegments": []
       },
       "mysql": {
         "names": ["mysql.exe", "mysql"],
-        "binaryPathSegments": [
-          "resources",
-          "app.asar.unpacked",
-          "resources",
-          "MySQL",
-          "mysql-8.0.37-winx64",
-          "bin",
-          "mysql.exe"
-        ]
+        "binaryPathSegments": []
       },
       "mysqladmin": {
         "names": ["mysqladmin.exe", "mysqladmin"],
-        "binaryPathSegments": [
-          "resources",
-          "app.asar.unpacked",
-          "resources",
-          "MySQL",
-          "mysql-8.0.37-winx64",
-          "bin",
-          "mysqladmin.exe"
-        ]
+        "binaryPathSegments": []
       }
     }
   }

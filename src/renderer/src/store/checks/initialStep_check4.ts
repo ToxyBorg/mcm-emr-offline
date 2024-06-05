@@ -7,6 +7,7 @@ import {
   mysqlDataDirSegments
 } from '@shared/consts/sharedPaths'
 import { handleMySQLServer } from '@renderer/handlers/handleMySQLServer'
+import { textDisplayAtom } from '../shared/textDisplay'
 
 // Define atoms for each check with the initial state
 const initialStep_check4Atom = atom<CheckStatus>('NOT_CHECKED')
@@ -25,6 +26,8 @@ const initialStep_check4LogicAtom = atom<CheckStatus, [update: CheckStatus], voi
     const shouldWeResetTheServer = update == 'NOT_CHECKED'
     console.log('- initialStep_check4Atom shouldWeResetTheServer:', shouldWeResetTheServer)
 
+    set(textDisplayAtom, `Entering handling MySQL server`)
+
     const isTheMySQLServerReady: boolean = await handleMySQLServer(
       mysqlConfigPathSegments,
       mysqlBinPathSegments,
@@ -32,6 +35,8 @@ const initialStep_check4LogicAtom = atom<CheckStatus, [update: CheckStatus], voi
       shouldWeResetTheServer
     )
     console.log('- initialStep_check4Atom isTheMySQLServerReady: ', isTheMySQLServerReady)
+
+    set(textDisplayAtom, `Checking if the MySQL server is ready:  ${isTheMySQLServerReady}`)
 
     if (isTheMySQLServerReady) {
       set(initialStep_check4Atom, update)

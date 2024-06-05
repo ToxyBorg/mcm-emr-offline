@@ -1,11 +1,7 @@
-import { Checker } from './components/Checker'
+import { Init } from './components/Init'
 
-function App(): JSX.Element {
-  return (
-    <>
-      <Checker />
-    </>
-  )
+const App = (): JSX.Element => {
+  return <Init />
 }
 
 export default App
