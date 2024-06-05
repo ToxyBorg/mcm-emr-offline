@@ -1,11 +1,13 @@
 import Versions from './components/Versions'
 import electronLogo from './assets/electron.svg'
+import { CurrentDirectory } from './components/CurrentDirectory'
 
 function App(): JSX.Element {
   const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
 
   return (
     <>
+      <CurrentDirectory></CurrentDirectory>
       <img alt="logo" className="logo" src={electronLogo} />
       <div className="creator">Powered by electron-vite</div>
       <div className="text">

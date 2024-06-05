@@ -1,8 +1,23 @@
 import { contextBridge } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
+import * as path from 'path'
+import * as fs from 'fs'
+import * as unzipper from 'unzipper'
 
 // Custom APIs for renderer
-const api = {}
+const api = {
+  getCurrentDir: (): string => process.cwd(),
+  joinPath: (...segments: string[]): string => path.join(...segments),
+  checkPathExists: (fullPath: string): boolean => fs.existsSync(fullPath),
+  isZipFile: (fullPath: string): boolean => {
+    return path.extname(fullPath) === '.zip' && fs.existsSync(fullPath)
+  },
+  extractZipFile: async (fullPath: string): Promise<string> => {
+    const dir = path.dirname(fullPath)
+    await fs.createReadStream(fullPath).pipe(unzipper.Extract({ path: dir }))
+    return `Zip file ${fullPath} extracted to ${dir}`
+  }
+}
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise
