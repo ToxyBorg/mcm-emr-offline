@@ -13,34 +13,28 @@ export const handleMySQLServer = async (
     async (acc, curr) => window.api.joinPath(await acc, curr),
     window.api.getCurrentDir()
   )
-
   console.log('- handleMySQLServer mysqlConfigPath:', mysqlConfigPath)
 
   const mysqlBinPath: string = await mysqlBinPathSegments.reduce(
     async (acc, curr) => window.api.joinPath(await acc, curr),
     window.api.getCurrentDir()
   )
-
   console.log('- handleMySQLServer mysqlBinPath:', mysqlBinPath)
 
   const mysqlDataDir: string = await mysqlDataDirSegments.reduce(
     async (acc, curr) => window.api.joinPath(await acc, curr),
     window.api.getCurrentDir()
   )
-
   console.log('- handleMySQLServer mysqlDataDir:', mysqlDataDir)
 
   const checkIfDataDirIsEmpty = await window.api.checkDirIsEmpty(mysqlDataDir)
-
   console.log('- handleMySQLServer checkIfDataDirIsEmpty:', checkIfDataDirIsEmpty)
 
   await window.api.stopMySQLServer()
-
   console.log('- handleMySQLServer after stopMySQLServer')
 
   // Read the configuration file before the initialization just to make sure
   const mysqlConfig: MySQLConfig = await window.api.readMySQLConfigJson(mysqlConfigPath)
-
   console.log(
     '- handleMySQLServer after stopMySQLServer mysqlConfig.Initialized: ',
     mysqlConfig.Initialized
@@ -84,7 +78,6 @@ export const handleMySQLServer = async (
           mysqlDataDir,
           fullPathToBackupDataDirectory
         )
-
         console.log('- handleMySQLServer copyingToBackup: ', copyingToBackup)
 
         if (copyingToBackup == 'FAILED_COPYING') {
@@ -151,6 +144,10 @@ export const handleMySQLServer = async (
         checkingIfTheServerIsRunning
       )
       if (checkingIfTheServerIsRunning) {
+        afterStartingTheServerConfig.mysql_sever_info.started = true
+        await window.api.writeMySQLConfigJson(mysqlConfigPath, afterStartingTheServerConfig)
+        console.log('- handleMySQLServer writing started = true to config')
+
         break
       }
       // Wait for a bit before checking again

@@ -1,18 +1,23 @@
-import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, dialog, Tray, Menu } from 'electron'
 // import * as path from 'node:path'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
 import {
   mainExecuteCommand,
   mainGetCurrentDir,
+  mainImportSqlFilesFromDirectory,
   mainIsMySQLServerRunning,
+  mainIsSpringBootServerRunning,
   mainJoinPath,
   mainReadMySQLConfigJson,
+  mainReadSpringBootConfigJson,
+  mainStopMySQLServer,
+  mainStopSpringBootServer,
   mainWriteMySQLConfigJson,
-  stopMySQLServer
+  mainWriteSpringBootConfigJson
 } from './lib/mainLib'
 import { MySQLConfig } from '@shared/types/mysql_config'
+import { SpringBootConfig } from '@shared/types/springboot_config'
 
 // const windows: BrowserWindow[] = []
 
@@ -23,7 +28,8 @@ function createWindow(): void {
     height: 670,
     show: false,
     autoHideMenuBar: false,
-    ...(process.platform === 'linux' ? { icon } : {}),
+    // ...(process.platform === 'linux' ? { icon } : {}),
+    icon: join(__dirname, '../../resources/icons/Windows/mcm-logo-favicon-256x256.ico'),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
@@ -43,17 +49,18 @@ function createWindow(): void {
     e.preventDefault() // Prevents the window from closing
 
     const choice = await dialog.showMessageBox(mainWindow, {
-      type: 'question',
+      type: 'warning',
       buttons: ['Yes', 'No'],
       title: 'Confirm',
-      message: 'Are you sure you want to quit? The MySQL server will be stopped.'
+      message: 'Are you sure you want to quit? The MCM application will be stopped.'
     })
 
     if (choice.response === 0) {
       // If the user clicked 'Yes'
       // Stop the MySQL server
       // IPC call for stopping the server
-      await stopMySQLServer()
+      await mainStopMySQLServer()
+      await mainStopSpringBootServer()
       mainWindow.destroy()
       app.quit()
     }
@@ -89,20 +96,45 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  ipcMain.handle('stop-mysql-server', () => stopMySQLServer())
+  let tray: Tray | null = null
+
+  tray = new Tray(join(__dirname, '../../resources/icons/Windows/mcm-logo-favicon-256x256.ico'))
+  const contextMenu = Menu.buildFromTemplate([
+    { label: 'Item1', type: 'radio' },
+    { label: 'Item2', type: 'radio' }
+  ])
+  tray.setToolTip('MCM EMR Offline Application')
+  tray.setContextMenu(contextMenu)
+
+  ipcMain.handle('stop-mysql-server', () => mainStopMySQLServer())
+  ipcMain.handle('stop-springboot-server', () => mainStopSpringBootServer())
   ipcMain.handle('read-mysql-config', (_, fullPath: string) => mainReadMySQLConfigJson(fullPath))
+  ipcMain.handle('read-springboot-config', (_, fullPath: string) =>
+    mainReadSpringBootConfigJson(fullPath)
+  )
   ipcMain.handle('write-mysql-config', (_, fullPath: string, config: MySQLConfig) =>
     mainWriteMySQLConfigJson(fullPath, config)
+  )
+  ipcMain.handle('write-springBoot-config', (_, fullPath: string, config: SpringBootConfig) =>
+    mainWriteSpringBootConfigJson(fullPath, config)
   )
   ipcMain.handle(
     'is-mysql-server-running',
     (_, host: string, port: number, user: string, password: string | null) =>
       mainIsMySQLServerRunning(host, port, user, password)
   )
+  ipcMain.handle('is-springboot-server-running', (_, host: string, port: number) =>
+    mainIsSpringBootServerRunning(host, port)
+  )
   ipcMain.handle('get-current-directory', () => mainGetCurrentDir())
   ipcMain.handle('join-path-segments', (_, ...segments: string[]) => mainJoinPath(...segments))
   ipcMain.handle('execute-command', (_, command: string, timeout?: number) =>
     mainExecuteCommand(command, timeout)
+  )
+  ipcMain.handle(
+    'import-sql-files-directory',
+    (_, mysqlPath: string, directoryPath: string, user: string, password: string) =>
+      mainImportSqlFilesFromDirectory(mysqlPath, directoryPath, user, password)
   )
 
   createWindow()
@@ -111,6 +143,11 @@ app.whenReady().then(() => {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
+  })
+
+  ipcMain.handle('open-mcm-emr-url', (_, mcmEmrUrl: string) => {
+    const openWindow = new BrowserWindow()
+    openWindow.loadURL(mcmEmrUrl)
   })
 })
 
@@ -123,16 +160,5 @@ app.on('window-all-closed', () => {
   }
 })
 
-// app.on('before-quit', async () => {
-//   // Send a message to the renderer process of each window to stop the MySQL server
-//   for (const window of windows) {
-//     if (!window.isDestroyed()) {
-//       window.webContents.send('stop-mysql-server')
-//     }
-//   }
-
-//   // Wait a bit for the renderer processes to handle the message
-//   await new Promise((resolve) => setTimeout(resolve, 2000))
-// })
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.

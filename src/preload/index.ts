@@ -9,25 +9,42 @@ import { CopyingStatus } from '@shared/types/copyingDataToBackupStatus'
 import { CreatingDirectoryStatus } from '@shared/types/creatingDirectoryStatus'
 import { MySQLConfig } from '@shared/types/mysql_config'
 import { API } from '@shared/types/window.api.types'
+import { SpringBootConfig } from '@shared/types/springboot_config'
 
 // Custom APIs for renderer
 const api: API = {
-  isMySQLServerRunning: (
+  openMcmEmrUrl: async (mcmEmrUrl: string): Promise<void> =>
+    ipcRenderer.invoke('open-mcm-emr-url', mcmEmrUrl),
+  isMySQLServerRunning: async (
     host: string,
     port: number,
     user: string,
     password: string | null
   ): Promise<boolean> => ipcRenderer.invoke('is-mysql-server-running', host, port, user, password),
+  isSpringBootServerRunning: async (host: string, port: number): Promise<boolean> =>
+    ipcRenderer.invoke('is-springboot-server-running', host, port),
   stopMySQLServer: async (): Promise<void> => ipcRenderer.invoke('stop-mysql-server'),
+  stopSpringBootServer: async (): Promise<void> => ipcRenderer.invoke('stop-springboot-server'),
   readMySQLConfigJson: async (fullPath: string): Promise<MySQLConfig> =>
     ipcRenderer.invoke('read-mysql-config', fullPath),
+  readSpringBootConfigJson: async (fullPath: string): Promise<SpringBootConfig> =>
+    ipcRenderer.invoke('read-springboot-config', fullPath),
   writeMySQLConfigJson: async (fullPath: string, config: MySQLConfig): Promise<void> =>
     ipcRenderer.invoke('write-mysql-config', fullPath, config),
+  writeSpringBootConfigJson: async (fullPath: string, config: SpringBootConfig): Promise<void> =>
+    ipcRenderer.invoke('write-springBoot-config', fullPath, config),
   getCurrentDir: async (): Promise<string> => ipcRenderer.invoke('get-current-directory'),
   joinPath: (...segments: string[]): Promise<string> =>
     ipcRenderer.invoke('join-path-segments', ...segments),
-  executeCommand: (command: string, timeout?: number): Promise<void> =>
+  executeCommand: async (command: string, timeout?: number): Promise<void> =>
     ipcRenderer.invoke('execute-command', command, timeout),
+  importSqlFilesFromDirectory: async (
+    mysqlPath: string,
+    directoryPath: string,
+    user: string,
+    password: string
+  ): Promise<void> =>
+    ipcRenderer.invoke('import-sql-files-directory', mysqlPath, directoryPath, user, password),
 
   getPreviousDir: (fullPath: string): string => path.dirname(fullPath),
 

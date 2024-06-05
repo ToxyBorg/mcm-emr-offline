@@ -24,10 +24,10 @@ export const handleReset = async (
         fullDirPathWithoutExtractedFolderName,
         'backup'
       )
-      const checkDataExists = window.api.checkPathExists(await fullPathToDataDirectory)
+      const checkDataExists = window.api.checkPathExists(fullPathToDataDirectory)
 
       if (checkDataExists) {
-        const isDirectoryEmpty = await window.api.checkDirIsEmpty(await fullPathToDataDirectory)
+        const isDirectoryEmpty = await window.api.checkDirIsEmpty(fullPathToDataDirectory)
         if (!isDirectoryEmpty) {
           const copyingToBackup = await window.api.copyDataToBackUp(
             fullPathToDataDirectory,

@@ -1,38 +1,29 @@
 import { Button, LoadingOverlay } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
-import { initial_step_index } from '@renderer/store/initial_step/initial_step_index'
+import { checking_index } from '@renderer/store/checks/checking_index'
 import { useSetAtom } from 'jotai'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
+import { MCMredirect } from './MCMredirect'
+import { Reset } from './Reset'
 
 export const Checker: React.FC = () => {
-  const triggerChecks = useSetAtom(initial_step_index)
+  const triggerChecks = useSetAtom(checking_index)
 
   const [loading, setLoading] = useDisclosure(true)
-  const [resetInitializer, setResetInitializer] = useState(false)
+  const [passed, setPassed] = useDisclosure(false)
 
   const handleChecker = async (): Promise<void> => {
     setLoading.open()
+    console.log('- Checker loading:', loading)
 
-    if (resetInitializer == true) {
-      const hasTheInitializationPassed = await triggerChecks('NOT_CHECKED')
-
-      if (hasTheInitializationPassed == 'PASSED') {
-        setResetInitializer(false)
-        setLoading.close()
-      } else if (hasTheInitializationPassed == 'FAILED') {
-        setResetInitializer(true)
-        setLoading.close()
-      }
+    const hasTheInitializationPassed = await triggerChecks('PASSED')
+    console.log('- Checker hasTheInitializationPassed:', hasTheInitializationPassed)
+    if (hasTheInitializationPassed == 'PASSED') {
+      setPassed.open()
     } else {
-      const hasTheInitializationPassed = await triggerChecks('PASSED')
-      if (hasTheInitializationPassed == 'PASSED') {
-        setResetInitializer(false)
-        setLoading.close()
-      } else if (hasTheInitializationPassed == 'FAILED') {
-        setResetInitializer(true)
-        setLoading.close()
-      }
+      setPassed.close()
     }
+    setLoading.close()
   }
 
   useEffect(() => {
@@ -49,19 +40,13 @@ export const Checker: React.FC = () => {
         overlayProps={{ radius: 'sm', blur: 2 }}
         loaderProps={{ color: 'pink', type: 'bars' }}
       />
-      {!loading && resetInitializer && (
-        <Button onClick={handleChecker} disabled={loading && !resetInitializer}>
-          Failed INITIALIZATION! Click To Retry
+      <Reset checksAreLoading={loading} />
+      {!loading && (
+        <Button onClick={handleChecker} disabled={loading}>
+          Refresh
         </Button>
       )}
-      {!loading && !resetInitializer && (
-        <Button onClick={handleChecker} disabled={loading && resetInitializer}>
-          Start Checks
-        </Button>
-      )}
-      <Button onClick={() => setResetInitializer(!resetInitializer)} color="red">
-        DEVELOPER
-      </Button>
+      <MCMredirect checksHavePassed={passed} />
     </>
   )
 }

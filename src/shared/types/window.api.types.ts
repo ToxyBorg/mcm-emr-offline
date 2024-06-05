@@ -3,10 +3,12 @@ import { CreatingDirectoryStatus } from './creatingDirectoryStatus'
 import { ExtractionStatus } from './extractionStatus'
 import { MySQLConfig } from './mysql_config'
 import { RemovingDirectoryStatus } from './removingDirectoryStatus'
+import { SpringBootConfig } from './springboot_config'
 
 export interface API {
   getCurrentDir: () => Promise<string>
   getPreviousDir: (fullPath: string) => string
+  openMcmEmrUrl: (mcmEmrUrl: string) => Promise<void>
   joinPath: (...segments: string[]) => Promise<string>
   checkPathExists: (fullPath: string) => boolean
   checkDirIsEmpty: (fullPath: string) => Promise<boolean>
@@ -21,13 +23,22 @@ export interface API {
   listZipFiles: (dirPath: string) => string[]
   executeCommand: (command: string, timeout?: number) => Promise<void>
   readMySQLConfigJson: (fullPath: string) => Promise<MySQLConfig>
+  readSpringBootConfigJson: (fullPath: string) => Promise<SpringBootConfig>
   writeMySQLConfigJson: (fullPath: string, config: MySQLConfig) => Promise<void>
+  writeSpringBootConfigJson: (fullPath: string, config: SpringBootConfig) => Promise<void>
   stopMySQLServer: () => Promise<void>
+  stopSpringBootServer: () => Promise<void>
   isMySQLServerRunning: (
     host: string,
     port: number,
     user: string,
     password: string | null
   ) => Promise<boolean>
-  // kllMySQLProcesses: (mysqlConfig: MySQLConfig, mysqlConfigPath: string) => Promise<void>
+  importSqlFilesFromDirectory: (
+    mysqlPath: string,
+    directoryPath: string,
+    user: string,
+    password: string
+  ) => Promise<void>
+  isSpringBootServerRunning: (host: string, port: number) => Promise<boolean>
 }

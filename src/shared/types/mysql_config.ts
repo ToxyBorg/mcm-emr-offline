@@ -5,9 +5,11 @@ export interface ProcessInfo {
 
 export interface MySQLConfig {
   Initialized: boolean
+  sqlDataDumped: boolean
   user: 'root'
   password: 'root' | null
   mysql_sever_info: {
+    started: boolean
     port: 3306
     host: 'localhost'
     processes: {
