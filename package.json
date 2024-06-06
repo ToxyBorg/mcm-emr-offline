@@ -1,6 +1,6 @@
 {
   "name": "mcm-emr-offline",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "MCM EMR Offline",
   "main": "./out/main/index.js",
   "author": "Amir",

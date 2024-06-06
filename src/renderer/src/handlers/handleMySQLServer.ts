@@ -56,6 +56,9 @@ export const handleMySQLServer = async (
       mysqlConfig.Initialized = false
       console.log('- handleMySQLServer mysqlConfig.Initialized = false to config')
 
+      mysqlConfig.sqlDataDumped = false
+      console.log('- handleMySQLServer mysqlConfig.sqlDataDumped = false to config')
+
       await window.api.writeMySQLConfigJson(mysqlConfigPath, mysqlConfig)
 
       if (!checkIfDataDirIsEmpty) {

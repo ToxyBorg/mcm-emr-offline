@@ -23,6 +23,10 @@ https://www.azul.com/downloads/?version=java-8-lts&os=windows&architecture=x86-6
 
 https://dev.mysql.com/downloads/mysql/8.0.html
 
+
+3) The `Doctors Data` zip goes in the directory `resources -> MySQL -> MySQL config` and should
+be named exactly `Doctors Data.zip`
+
 ### Settings
 
 * `electron-builder.config.ts` for tweaking the build params of the app
