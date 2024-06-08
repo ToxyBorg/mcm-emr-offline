@@ -11,7 +11,6 @@ An Electron application with React, TypeScript, Jotai and Mantine
 ### Install
 
 * `npm i`to install the dependencies
-* `npm i -g ts-node` to install ts-node globally
 
 ### Download
 

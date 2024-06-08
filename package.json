@@ -1,6 +1,6 @@
 {
   "name": "mcm-emr-offline",
-  "version": "1.0.1",
+  "version": "1.0.1-All-Doctors",
   "description": "MCM EMR Offline",
   "main": "./out/main/index.js",
   "author": "Amir",
@@ -15,7 +15,7 @@
     "dev": "electron-vite dev",
     "build": "npm run typecheck && electron-vite build",
     "postinstall": "electron-builder install-app-deps",
-    "build:electron-build": "npm run build && ts-node electron-builder.config.ts"
+    "build:electron-build": "npm run build && npx ts-node electron-builder.config.ts"
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
@@ -52,6 +52,7 @@
     "prettier": "^3.3.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "ts-node": "^10.9.2",
     "typescript": "^5.4.5",
     "vite": "^5.2.12"
   }
